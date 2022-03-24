@@ -1,8 +1,10 @@
 package tech.bilski.playground.sql;
 
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 @SpringBootConfiguration
-public class SpringConfig {
+@EnableAutoConfiguration
+public class AppConfig {
 
 }
