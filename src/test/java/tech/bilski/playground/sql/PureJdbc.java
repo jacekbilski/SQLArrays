@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("SqlWithoutWhere")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class Playground {
+public class PureJdbc {
 
-    private static final Logger logger = LoggerFactory.getLogger(Playground.class);
+    private static final Logger logger = LoggerFactory.getLogger(PureJdbc.class);
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -41,7 +41,7 @@ public class Playground {
     }
 
     @Test
-    void pureJdbc_insert() {
+    void insert() {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var count = jdbcTemplate.update("INSERT INTO PURE_JDBC (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
         assertThat(count).isEqualTo(1);
@@ -50,7 +50,7 @@ public class Playground {
     }
 
     @Test
-    void pureJdbc_insert_usingParam() {
+    void insert_usingParam() {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         final var items = new String[]{"first", "second"};
         final var params = new MapSqlParameterSource("items", items);
@@ -61,7 +61,7 @@ public class Playground {
     }
 
     @Test
-    void pureJdbc_append() {
+    void append() {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var count = jdbcTemplate.update("INSERT INTO PURE_JDBC (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
         assertThat(count).isEqualTo(1);
@@ -79,7 +79,7 @@ public class Playground {
     }
 
     @Test
-    void pureJdbc_remove() {
+    void remove() {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var count = jdbcTemplate.update("INSERT INTO PURE_JDBC (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
         assertThat(count).isEqualTo(1);
@@ -97,7 +97,7 @@ public class Playground {
     }
 
     @Test
-    void pureJdbc_get() throws SQLException {
+    void get() throws SQLException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var count = jdbcTemplate.update("INSERT INTO PURE_JDBC (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
         assertThat(count).isEqualTo(1);
