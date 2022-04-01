@@ -76,10 +76,23 @@ public class Playground {
         assertThat(count).isEqualTo(4);
     }
 
-//    @Test
-//    void pureJdbc_remove() {
-//        assertThat(result).;
-//    }
+    @Test
+    void pureJdbc_remove() {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        var count = jdbcTemplate.update("INSERT INTO XYZ (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
+        assertThat(count).isEqualTo(1);
+        var id = getId(keyHolder);
+
+        final var itemToRemove = "first";
+        final var params = new MapSqlParameterSource();
+        params.addValue("item", itemToRemove);
+        params.addValue("id", id);
+        count = jdbcTemplate.update("UPDATE XYZ SET arr = array_remove(arr, :item) WHERE id = :id", params);
+        assertThat(count).isEqualTo(1);
+
+        count = jdbcTemplate.queryForObject("SELECT cardinality(arr) FROM XYZ WHERE id = :id", new MapSqlParameterSource("id", id), Integer.class);
+        assertThat(count).isEqualTo(1);
+    }
 
     private Number getId(KeyHolder keyHolder) {
         var keyList = keyHolder.getKeyList();
