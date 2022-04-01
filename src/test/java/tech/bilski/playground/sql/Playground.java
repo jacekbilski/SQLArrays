@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("SqlWithoutWhere")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Playground {
@@ -57,12 +58,23 @@ public class Playground {
         logger.info("Actual key: '{}'", id);
     }
 
-//    @Test
-//    void pureJdbc_add() {
-//        var count = jdbcTemplate.update("INSERT INTO XYZ (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource());
-//        assertThat(count).isEqualTo(1);
-//        count = jdbcTemplate.update("", emptyMap());
-//    }
+    @Test
+    void pureJdbc_append() {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        var count = jdbcTemplate.update("INSERT INTO XYZ (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
+        assertThat(count).isEqualTo(1);
+        var id = getId(keyHolder);
+
+        final var newItems = new String[]{"third", "fourth"};
+        final var params = new MapSqlParameterSource();
+        params.addValue("items", newItems);
+        params.addValue("id", id);
+        count = jdbcTemplate.update("UPDATE XYZ SET arr = arr || :items WHERE id = :id", params);
+        assertThat(count).isEqualTo(1);
+
+        count = jdbcTemplate.queryForObject("SELECT cardinality(arr) FROM XYZ WHERE id = :id", new MapSqlParameterSource("id", id), Integer.class);
+        assertThat(count).isEqualTo(4);
+    }
 
 //    @Test
 //    void pureJdbc_remove() {
