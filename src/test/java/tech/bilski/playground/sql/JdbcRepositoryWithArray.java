@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = AppConfig.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JdbcRepositoryWithArray {
 
