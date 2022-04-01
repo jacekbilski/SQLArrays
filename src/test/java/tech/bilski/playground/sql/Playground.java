@@ -13,6 +13,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.Array;
+import java.sql.SQLException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,6 +94,20 @@ public class Playground {
 
         count = jdbcTemplate.queryForObject("SELECT cardinality(arr) FROM PURE_JDBC WHERE id = :id", new MapSqlParameterSource("id", id), Integer.class);
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void pureJdbc_get() throws SQLException {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        var count = jdbcTemplate.update("INSERT INTO PURE_JDBC (arr) VALUES ('{\"first\", \"second\"}')", new MapSqlParameterSource(), keyHolder);
+        assertThat(count).isEqualTo(1);
+        var id = getId(keyHolder);
+
+        var sqlArray = jdbcTemplate.queryForObject("SELECT arr FROM PURE_JDBC WHERE id = :id", new MapSqlParameterSource("id", id), Array.class);
+        var array = ((String[]) sqlArray.getArray());
+        assertThat(array)
+                .hasSize(2)
+                .contains("first", "second");
     }
 
     private Number getId(KeyHolder keyHolder) {
