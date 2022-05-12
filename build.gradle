@@ -3,6 +3,10 @@ plugins {
     id "org.springframework.boot" version "2.6.6"
 }
 
+ext {
+    testcontainersVersion = "1.17.1"
+}
+
 apply plugin: "io.spring.dependency-management"
 
 group "tech.bilski.playground"
@@ -19,6 +23,9 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.assertj:assertj-core"
+    testImplementation "org.testcontainers:testcontainers:${testcontainersVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
+    testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
