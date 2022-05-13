@@ -1,7 +1,10 @@
 package tech.bilski.playground.sql;
 
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,13 +13,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "jpa_entity")
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 public class JpaEntity {
     @Id
     @GeneratedValue
     private Long id;
 
-    @ElementCollection
-    @Column(name = "list", columnDefinition = "TEXT ARRAY[5]")
+    @Type(type = "list-array")
+    @Column(name = "list", columnDefinition = "TEXT[]")
     private List<String> list;
 
     public Long getId() {
